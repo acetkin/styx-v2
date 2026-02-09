@@ -4,9 +4,10 @@
 - Added a new isolated module: `SPIN/styx-api/app/contract_v1/`.
 - Legacy endpoints were not modified in behavior; only one new route was added.
 - New universal endpoint: `POST /v1/contract`.
+- Endpoint uses an explicit Pydantic request body model so Swagger shows a JSON request editor.
 - Flow:
-  - Raw JSON parse and top-level shape checks (`metadata`, `player`, `request`).
-  - Pydantic validation using contract-first request models.
+  - FastAPI + explicit Pydantic body model validation (`metadata`, `player`, `request`).
+  - Route-specific contract validation error envelope for `/v1/contract`.
   - Intent dispatch against `SPIN/docs/contract.json`.
   - Contract envelope response for success/error.
 
