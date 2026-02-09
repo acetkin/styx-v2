@@ -62,16 +62,25 @@ def test_contract_endpoint_happy_contract_payload() -> None:
     assert "intents" in payload["response"]["data"]["contract"]
 
 
+def test_contract_openapi_has_request_body_schema() -> None:
+    client = _client()
+    resp = client.get("/openapi.json")
+    assert resp.status_code == 200
+    payload = resp.json()
+    post_spec = payload["paths"]["/v1/contract"]["post"]
+    assert "requestBody" in post_spec
+    assert "content" in post_spec["requestBody"]
+    assert "application/json" in post_spec["requestBody"]["content"]
+
+
 def test_contract_endpoint_invalid_request_shape() -> None:
     client = _client()
     resp = client.post("/v1/contract", json={"metadata": {"intent": "contract"}})
-    assert resp.status_code == 400
+    assert resp.status_code == 422
     payload = resp.json()
     assert payload["status"] == "error"
-    assert payload["response"]["data"]["error"]["error_code"] == "INVALID_REQUEST"
-    missing = payload["response"]["data"]["error"]["missing"]
-    assert "player" in missing
-    assert "request" in missing
+    assert payload["response"]["data"]["error"]["error_code"] == "VALIDATION_ERROR"
+    assert payload["response"]["data"]["error"]["invalid"]
 
 
 def test_contract_endpoint_unsupported_intent() -> None:
@@ -94,3 +103,19 @@ def test_contract_endpoint_validation_error_for_required_paths() -> None:
     assert payload["response"]["data"]["error"]["error_code"] == "VALIDATION_ERROR"
     assert "player.birth.date" in payload["response"]["data"]["error"]["missing"]
 
+
+def test_contract_endpoint_internal_error_returns_envelope(monkeypatch: object) -> None:
+    client = _client()
+    import app.contract_v1.router as router_module
+
+    def _boom(*_args, **_kwargs):
+        raise RuntimeError("Contract file missing in runtime")
+
+    monkeypatch.setattr(router_module, "dispatch_universal_request", _boom)
+    resp = client.post("/v1/contract", json=_base_payload("contract"))
+    assert resp.status_code == 500
+    payload = resp.json()
+    assert payload["status"] == "error"
+    err = payload["response"]["data"]["error"]
+    assert err["error_code"] == "INTERNAL_ERROR"
+    assert payload["response"]["summary"]["message"] == "Contract file missing in runtime"

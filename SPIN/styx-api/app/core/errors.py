@@ -6,6 +6,7 @@ from typing import Iterable
 
 from fastapi import HTTPException, Request
 from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 
 from app.core.envelope import ErrorItem, envelope_response
 from app.core.middleware import REQUEST_ID_HEADER
@@ -62,6 +63,30 @@ def _stringify_detail(detail: object) -> str:
 
 
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    if request.url.path == "/v1/contract":
+        from app.contract_v1.responses import error_response
+
+        invalid: list[dict[str, object]] = []
+        for err in exc.errors():
+            loc = list(err.get("loc", []))
+            if loc and loc[0] == "body":
+                loc = loc[1:]
+            path = ".".join(str(part) for part in loc) if loc else "/"
+            invalid.append(
+                {
+                    "path": path,
+                    "reason": err.get("msg", "Validation error"),
+                    "expected": err.get("type"),
+                    "received": None,
+                }
+            )
+        body, status = error_response(
+            error_code="VALIDATION_ERROR",
+            invalid=invalid,
+            http_status=422,
+        )
+        return JSONResponse(status_code=status, content=body)
+
     return envelope_response(
         request=request,
         data=None,
