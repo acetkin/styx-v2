@@ -1,0 +1,5 @@
+CODEX:
+Done. Opened the doc-only PR from branch `docs/runbook-local-first`.
+
+PR link:
+- https://github.com/acetkin/styx/pull/19
