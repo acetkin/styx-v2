@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import logging
+
 from fastapi import APIRouter, Body
 from fastapi.responses import JSONResponse
 
@@ -8,6 +10,7 @@ from app.contract_v1.models import ContractRequest, ContractResponse
 from app.contract_v1.responses import error_response
 
 router = APIRouter()
+_contract_logger = logging.getLogger("styx.contract_v1")
 
 
 @router.post("/v1/contract", response_model=ContractResponse)
@@ -21,11 +24,12 @@ async def contract_endpoint(
         if http_status == 200:
             return validated
     except Exception as exc:
-        message = str(exc) or "Internal server error"
+        _contract_logger.exception("contract_v1_internal_error intent=%s", req.metadata.intent)
+        message = "Unexpected server error. Check server logs."
         body, http_status = error_response(
             error_code="INTERNAL_ERROR",
             summary={"intent": req.metadata.intent, "message": message},
-            invalid=[{"path": "/", "reason": message, "expected": None, "received": None}],
+            invalid=[{"path": "/", "reason": message, "expected": "valid request", "received": None}],
             http_status=500,
         )
         validated = ContractResponse.model_validate(body)

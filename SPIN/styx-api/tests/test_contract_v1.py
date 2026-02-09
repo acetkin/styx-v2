@@ -7,7 +7,13 @@ from fastapi.testclient import TestClient
 from app.main import app
 
 
-def _client() -> TestClient:
+def _client(monkeypatch: object | None = None) -> TestClient:
+    if monkeypatch is not None:
+        ephe_path = Path(__file__).resolve().parents[1] / "ephe"
+        if ephe_path.exists():
+            monkeypatch.setenv("SE_EPHE_PATH", str(ephe_path))
+        monkeypatch.setenv("STYX_GEOCODE_STUB", "41.2795516,31.4229672,0,Karadeniz Eregli")
+        monkeypatch.setenv("STYX_GEOIP_STUB", "41.2795516,31.4229672,0,Karadeniz Eregli")
     return TestClient(app)
 
 
@@ -32,6 +38,7 @@ def _base_payload(intent: str) -> dict:
             "styx_version": _contract_version(),
             "request_id": "req-1",
             "intent": intent,
+            "timezone": "Europe/Istanbul",
         },
         "player": {
             "identity": {"id": "p1", "name": "Test"},
@@ -45,14 +52,14 @@ def _base_payload(intent: str) -> dict:
         },
         "request": {
             "settings": {"house_system": "placidus", "zodiac": "tropical"},
-            "parameters": {},
+            "parameters": {"location": {"lat": 41.2795516, "lon": 31.4229672, "alt_m": 0.0}},
             "output": {"verbosity": "normal", "astrological_objects": ["natal"]},
         },
     }
 
 
-def test_contract_endpoint_happy_contract_payload() -> None:
-    client = _client()
+def test_contract_endpoint_happy_contract_payload(monkeypatch: object) -> None:
+    client = _client(monkeypatch)
     resp = client.post("/v1/contract", json=_base_payload("contract"))
     assert resp.status_code == 200
     payload = resp.json()
@@ -97,8 +104,8 @@ def test_contract_endpoint_unsupported_intent() -> None:
     assert payload["response"]["data"]["error"]["error_code"] == "UNSUPPORTED_INTENT"
 
 
-def test_contract_endpoint_validation_error_for_required_paths() -> None:
-    client = _client()
+def test_contract_endpoint_validation_error_for_required_paths(monkeypatch: object) -> None:
+    client = _client(monkeypatch)
     req = _base_payload("natal")
     req["player"]["birth"].pop("date", None)
     resp = client.post("/v1/contract", json=req)
@@ -110,7 +117,7 @@ def test_contract_endpoint_validation_error_for_required_paths() -> None:
 
 
 def test_contract_endpoint_internal_error_returns_envelope(monkeypatch: object) -> None:
-    client = _client()
+    client = _client(monkeypatch)
     import app.contract_v1.router as router_module
 
     def _boom(*_args, **_kwargs):
@@ -123,4 +130,32 @@ def test_contract_endpoint_internal_error_returns_envelope(monkeypatch: object) 
     assert payload["status"] == "error"
     err = payload["response"]["data"]["error"]
     assert err["error_code"] == "INTERNAL_ERROR"
-    assert payload["response"]["summary"]["message"] == "Contract file missing in runtime"
+    assert payload["response"]["summary"]["message"] == "Unexpected server error. Check server logs."
+
+
+def test_contract_endpoint_natal_happy_path(monkeypatch: object) -> None:
+    client = _client(monkeypatch)
+    req = _base_payload("natal")
+    resp = client.post("/v1/contract", json=req)
+    assert resp.status_code == 200
+    payload = resp.json()
+    assert payload["status"] == "ok"
+    assert payload["response"]["summary"]["intent"] == "natal"
+    assert payload["response"]["summary"]["datetime_utc"]
+    assert payload["response"]["data"]["natal"]["meta"]["chart_type"] == "natal"
+
+
+def test_contract_endpoint_natal_missing_timezone_or_time(monkeypatch: object) -> None:
+    client = _client(monkeypatch)
+    req = _base_payload("natal")
+    req["metadata"].pop("timezone", None)
+    req["player"]["birth"].pop("time", None)
+    resp = client.post("/v1/contract", json=req)
+    assert resp.status_code == 422
+    payload = resp.json()
+    assert payload["status"] == "error"
+    err = payload["response"]["data"]["error"]
+    assert err["error_code"] == "VALIDATION_ERROR"
+    paths = {item["path"] for item in err["invalid"]}
+    assert "metadata.timezone" in paths
+    assert "player.birth.time" in paths
