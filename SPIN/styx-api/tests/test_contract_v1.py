@@ -71,6 +71,11 @@ def test_contract_openapi_has_request_body_schema() -> None:
     assert "requestBody" in post_spec
     assert "content" in post_spec["requestBody"]
     assert "application/json" in post_spec["requestBody"]["content"]
+    schema = post_spec["requestBody"]["content"]["application/json"]["schema"]
+    assert schema["$ref"].endswith("/ContractRequest")
+    responses = post_spec["responses"]
+    assert "200" in responses
+    assert responses["200"]["content"]["application/json"]["schema"]["$ref"].endswith("/ContractResponse")
 
 
 def test_contract_endpoint_invalid_request_shape() -> None:
