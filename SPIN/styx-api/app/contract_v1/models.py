@@ -62,3 +62,27 @@ class ErrorInvalidItem(ContractModel):
     expected: str | None = None
     received: Any | None = None
 
+
+class ContractErrorPayload(ContractModel):
+    error_code: Literal["INVALID_REQUEST", "VALIDATION_ERROR", "UNSUPPORTED_INTENT", "INTERNAL_ERROR"]
+    missing: list[str] = Field(default_factory=list)
+    invalid: list[ErrorInvalidItem] = Field(default_factory=list)
+
+
+class ContractResponseMetadata(ContractModel):
+    styx_version: str
+
+
+class ContractResponseBody(ContractModel):
+    summary: dict[str, Any] = Field(default_factory=dict)
+    data: dict[str, Any] = Field(default_factory=dict)
+
+
+class ContractResponse(ContractModel):
+    status: Literal["contract", "ok", "error"]
+    metadata: ContractResponseMetadata
+    response: ContractResponseBody
+
+
+class ContractRequest(UniversalRequest):
+    """Named request model for the universal contract endpoint."""

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 from app.contract_v1.contract_store import load_contract
-from app.contract_v1.models import UniversalRequest
+from app.contract_v1.models import ContractRequest
 from app.contract_v1.responses import contract_response, error_response
 
 
@@ -20,7 +20,7 @@ def _missing_required_paths(payload: dict[str, Any], required_paths: list[str]) 
     return [path for path in required_paths if not _path_exists(payload, path)]
 
 
-def dispatch_universal_request(parsed: UniversalRequest, raw_payload: dict[str, Any]) -> tuple[dict[str, Any], int]:
+def dispatch_universal_request(parsed: ContractRequest, raw_payload: dict[str, Any]) -> tuple[dict[str, Any], int]:
     contract = load_contract()
     intent = parsed.metadata.intent
 
@@ -69,4 +69,3 @@ def dispatch_universal_request(parsed: UniversalRequest, raw_payload: dict[str, 
         ],
         http_status=400,
     )
-
