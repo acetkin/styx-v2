@@ -5,6 +5,7 @@ from copy import deepcopy
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 
+from app.contract_v1.router import router as contract_v1_router
 from app.config import (
     ASTEROID_ORDER,
     ASPECT_ORBS,
@@ -54,6 +55,7 @@ app.middleware("http")(timing_middleware)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
 app.add_exception_handler(HTTPException, http_exception_handler)
 app.add_exception_handler(Exception, unhandled_exception_handler)
+app.include_router(contract_v1_router)
 
 DEFAULT_ORB_ASPECTS = {
     "conjunction": 8,

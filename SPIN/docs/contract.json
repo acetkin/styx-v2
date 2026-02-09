@@ -1,0 +1,548 @@
+{
+  "styx_version": "string",
+  "glossary": {
+    "formats": {
+      "ISO8601": "RFC3339-compatible timestamp.",
+      "YYYY-MM-DD": "Calendar date string.",
+      "HH:MM": "24h local time string."
+    },
+    "enums": {
+      "status": ["contract", "ok", "error"],
+      "zodiac": ["tropical", "sidereal"],
+      "verbosity": ["minimal", "normal", "verbose"],
+      "confidence": ["low", "medium", "high"],
+      "astrocartographic_scope": ["world", "region"],
+      "timeline_step": ["hour", "day", "week", "month"]
+    },
+    "terms": {
+      "overlay": "A secondary frame applied on top of a base chart (used in Transit/Timeline requests).",
+      "astrological_objects": "Optional allowlist of named output blocks to include in responses.",
+      "node_axis_seasons": "node_axis_timeline: 5 nodal cycles (~18.6y each) treated as seasons (~93y total).",
+      "node_axis_chapters": "node_axis_timeline: each season is divided into 12 chapters using 30° slices away from the natal nodal axis (30,60,...,360). Nodal axis is retro, so slices progress backwards in time."
+    }
+  },
+
+  "universal_request_form": {
+    "metadata": {
+      "styx_version": "string",
+      "request_id": "string",
+      "intent": "string",
+      "timezone": "string?"
+    },
+    "player": {
+      "identity": { "id": "string?", "name": "string?" },
+      "birth": {
+        "date": "YYYY-MM-DD?",
+        "time": "HH:MM|null?",
+        "place": "string?",
+        "country_code": "string?"
+      },
+      "facts": { "<string_key>": "<any_json_value>" }
+    },
+    "request": {
+      "settings": { "house_system": "string", "zodiac": "tropical|sidereal" },
+      "parameters": {},
+      "output": { "verbosity": "minimal|normal|verbose?", "astrological_objects": ["string?"] }
+    }
+  },
+
+  "universal_response_form": {
+    "status": "contract|ok|error",
+    "metadata": { "styx_version": "string" },
+    "response": { "summary": {}, "data": {} }
+  },
+
+  "response_payloads": {
+    "contract": {
+      "path": "response.data.contract",
+      "shape": {
+        "styx_version": "string",
+        "glossary": {},
+        "universal_request_form": {},
+        "universal_response_form": {},
+        "response_payloads": {},
+        "intents": {},
+        "errors": {}
+      }
+    },
+    "error": {
+      "path": "response.data.error",
+      "shape": {
+        "error_code": "INVALID_REQUEST|VALIDATION_ERROR|UNSUPPORTED_INTENT|INTERNAL_ERROR",
+        "missing": ["string?"],
+        "invalid": [
+          { "path": "string", "reason": "string?", "expected": "string?", "received": "any?" }
+        ]
+      }
+    }
+  },
+
+  "errors": {
+    "INVALID_REQUEST": { "meaning": "Request JSON is not parseable or missing required top-level parts." },
+    "VALIDATION_ERROR": { "meaning": "Request parsed but required/typed fields are missing/invalid." },
+    "UNSUPPORTED_INTENT": { "meaning": "Intent not recognized by this Styx version." },
+    "INTERNAL_ERROR": { "meaning": "Unexpected server-side failure." }
+  },
+
+  "intents": {
+    "moment": {
+      "group": "CHART",
+      "description": "Moment chart for a given instant; player data may be empty.",
+      "request": {
+        "required_paths": [],
+        "optional_paths": ["request.parameters.at"],
+        "template": { "request": { "parameters": { "at": "ISO8601?" } } }
+      },
+      "ok_response": {
+        "summary_template": { "intent": "moment", "at": "ISO8601" },
+        "data_template": { "moment": { "at": "ISO8601", "moment_chart": {} } }
+      }
+    },
+
+    "natal": {
+      "group": "CHART",
+      "description": "Natal chart; requires player birth date + place; time may be null.",
+      "request": {
+        "required_paths": ["player.birth.date", "player.birth.place"],
+        "optional_paths": ["player.birth.time", "player.birth.country_code"],
+        "template": { "request": { "parameters": {} } }
+      },
+      "ok_response": {
+        "summary_template": { "intent": "natal" },
+        "data_template": { "natal": { "chart": {}, "points": {}, "houses": {}, "aspects": [] } }
+      }
+    },
+
+    "progressed_chart": {
+      "group": "CHART",
+      "description": "Progressed chart at a target date-time.",
+      "request": {
+        "required_paths": ["player.birth.date", "player.birth.place", "request.parameters.at"],
+        "optional_paths": ["player.birth.time", "player.birth.country_code"],
+        "template": { "request": { "parameters": { "at": "ISO8601" } } }
+      },
+      "ok_response": {
+        "summary_template": { "intent": "progressed_chart", "at": "ISO8601" },
+        "data_template": {
+          "progressed_chart": { "at": "ISO8601", "chart": {}, "points": {}, "houses": {}, "aspects": [] }
+        }
+      }
+    },
+
+    "solar_arc_chart": {
+      "group": "CHART",
+      "description": "Solar Arc chart at a target date-time.",
+      "request": {
+        "required_paths": ["player.birth.date", "player.birth.place", "request.parameters.at"],
+        "optional_paths": ["player.birth.time", "player.birth.country_code"],
+        "template": { "request": { "parameters": { "at": "ISO8601" } } }
+      },
+      "ok_response": {
+        "summary_template": { "intent": "solar_arc_chart", "at": "ISO8601" },
+        "data_template": {
+          "solar_arc_chart": { "at": "ISO8601", "chart": {}, "points": {}, "houses": {}, "aspects": [] }
+        }
+      }
+    },
+
+    "astrocartographic": {
+      "group": "CHART",
+      "description": "Astrocartography lines; defaults to world scope.",
+      "request": {
+        "required_paths": ["player.birth.date", "player.birth.place"],
+        "optional_paths": [
+          "request.parameters.scope",
+          "request.parameters.region_bbox",
+          "request.parameters.lines_allowlist",
+          "request.parameters.limit_lines"
+        ],
+        "template": {
+          "request": {
+            "parameters": {
+              "scope": "world|region?",
+              "region_bbox": {
+                "min_lat": "number?",
+                "min_lon": "number?",
+                "max_lat": "number?",
+                "max_lon": "number?"
+              },
+              "lines_allowlist": ["string?"],
+              "limit_lines": "number?"
+            }
+          }
+        }
+      },
+      "ok_response": {
+        "summary_template": { "intent": "astrocartographic" },
+        "data_template": {
+          "astrocartographic": {
+            "scope": "world|region",
+            "lines": [
+              { "type": "string", "label": "string?", "points": [{ "lat": "number", "lon": "number" }] }
+            ]
+          }
+        }
+      }
+    },
+
+    "transit_to_natal": {
+      "group": "TRANSIT",
+      "description": "Transit overlay applied to natal at a single instant.",
+      "request": {
+        "required_paths": ["player.birth.date", "player.birth.place"],
+        "optional_paths": [
+          "player.birth.time",
+          "player.birth.country_code",
+          "request.parameters.overlay.at"
+        ],
+        "template": { "request": { "parameters": { "overlay": { "at": "ISO8601?" } } } }
+      },
+      "ok_response": {
+        "summary_template": { "intent": "transit_to_natal", "at": "ISO8601" },
+        "data_template": {
+          "transit_to_natal": {
+            "at": "ISO8601",
+            "base": { "natal": {} },
+            "overlay": { "transit": {} },
+            "aspects": []
+          }
+        }
+      }
+    },
+
+    "progressed_to_natal": {
+      "group": "TRANSIT",
+      "description": "Progressed overlay applied to natal at a single instant.",
+      "request": {
+        "required_paths": ["player.birth.date", "player.birth.place", "request.parameters.overlay.at"],
+        "optional_paths": ["player.birth.time", "player.birth.country_code"],
+        "template": { "request": { "parameters": { "overlay": { "at": "ISO8601" } } } }
+      },
+      "ok_response": {
+        "summary_template": { "intent": "progressed_to_natal", "at": "ISO8601" },
+        "data_template": {
+          "progressed_to_natal": {
+            "at": "ISO8601",
+            "base": { "natal": {} },
+            "overlay": { "progressed": {} },
+            "aspects": []
+          }
+        }
+      }
+    },
+
+    "solar_arc_to_natal": {
+      "group": "TRANSIT",
+      "description": "Solar Arc overlay applied to natal at a single instant.",
+      "request": {
+        "required_paths": ["player.birth.date", "player.birth.place", "request.parameters.overlay.at"],
+        "optional_paths": ["player.birth.time", "player.birth.country_code"],
+        "template": { "request": { "parameters": { "overlay": { "at": "ISO8601" } } } }
+      },
+      "ok_response": {
+        "summary_template": { "intent": "solar_arc_to_natal", "at": "ISO8601" },
+        "data_template": {
+          "solar_arc_to_natal": {
+            "at": "ISO8601",
+            "base": { "natal": {} },
+            "overlay": { "solar_arc": {} },
+            "aspects": []
+          }
+        }
+      }
+    },
+
+    "synastry": {
+      "group": "TRANSIT",
+      "description": "Natal-to-natal comparison (player natal as base, other natal as overlay).",
+      "request": {
+        "required_paths": [
+          "player.birth.date",
+          "player.birth.place",
+          "request.parameters.overlay.other.birth.date",
+          "request.parameters.overlay.other.birth.place"
+        ],
+        "optional_paths": [
+          "player.birth.time",
+          "player.birth.country_code",
+          "request.parameters.overlay.other.identity",
+          "request.parameters.overlay.other.birth.time",
+          "request.parameters.overlay.other.birth.country_code",
+          "request.parameters.overlay.other.facts"
+        ],
+        "template": {
+          "request": {
+            "parameters": {
+              "overlay": {
+                "other": {
+                  "identity": { "id": "string?", "name": "string?" },
+                  "birth": {
+                    "date": "YYYY-MM-DD",
+                    "time": "HH:MM|null?",
+                    "place": "string?",
+                    "country_code": "string?"
+                  },
+                  "facts": { "<string_key>": "<any_json_value>" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ok_response": {
+        "summary_template": { "intent": "synastry" },
+        "data_template": {
+          "synastry": {
+            "base": { "natal": {} },
+            "overlay": { "natal": {} },
+            "aspects": []
+          }
+        }
+      }
+    },
+
+    "transit_timeline": {
+      "group": "TIMELINE",
+      "description": "Transit timeline over a date range.",
+      "request": {
+        "required_paths": [
+          "player.birth.date",
+          "player.birth.place",
+          "request.parameters.time_range.start",
+          "request.parameters.time_range.end"
+        ],
+        "optional_paths": [
+          "player.birth.time",
+          "player.birth.country_code",
+          "request.parameters.time_range.step",
+          "request.parameters.overlay",
+          "request.parameters.levels",
+          "request.parameters.limit_events",
+          "request.parameters.focus"
+        ],
+        "template": {
+          "request": {
+            "parameters": {
+              "overlay": {},
+              "time_range": { "start": "ISO8601", "end": "ISO8601", "step": "hour|day|week|month?" },
+              "levels": ["number?"],
+              "limit_events": "number?",
+              "focus": "string?"
+            }
+          }
+        }
+      },
+      "ok_response": {
+        "summary_template": { "intent": "transit_timeline", "start": "ISO8601", "end": "ISO8601" },
+        "data_template": {
+          "transit_timeline": {
+            "time_range": { "start": "ISO8601", "end": "ISO8601", "step": "string?" },
+            "events": []
+          }
+        }
+      }
+    },
+
+    "progressed_timeline": {
+      "group": "TIMELINE",
+      "description": "Progressed timeline over a date range.",
+      "request": {
+        "required_paths": [
+          "player.birth.date",
+          "player.birth.place",
+          "request.parameters.time_range.start",
+          "request.parameters.time_range.end"
+        ],
+        "optional_paths": [
+          "player.birth.time",
+          "player.birth.country_code",
+          "request.parameters.time_range.step",
+          "request.parameters.overlay",
+          "request.parameters.levels",
+          "request.parameters.limit_events",
+          "request.parameters.focus"
+        ],
+        "template": {
+          "request": {
+            "parameters": {
+              "overlay": {},
+              "time_range": { "start": "ISO8601", "end": "ISO8601", "step": "month?" },
+              "levels": ["number?"],
+              "limit_events": "number?",
+              "focus": "string?"
+            }
+          }
+        }
+      },
+      "ok_response": {
+        "summary_template": { "intent": "progressed_timeline", "start": "ISO8601", "end": "ISO8601" },
+        "data_template": {
+          "progressed_timeline": {
+            "time_range": { "start": "ISO8601", "end": "ISO8601", "step": "string?" },
+            "events": []
+          }
+        }
+      }
+    },
+
+    "solar_arc_timeline": {
+      "group": "TIMELINE",
+      "description": "Solar Arc timeline over a date range.",
+      "request": {
+        "required_paths": [
+          "player.birth.date",
+          "player.birth.place",
+          "request.parameters.time_range.start",
+          "request.parameters.time_range.end"
+        ],
+        "optional_paths": [
+          "player.birth.time",
+          "player.birth.country_code",
+          "request.parameters.time_range.step",
+          "request.parameters.overlay",
+          "request.parameters.levels",
+          "request.parameters.limit_events",
+          "request.parameters.focus"
+        ],
+        "template": {
+          "request": {
+            "parameters": {
+              "overlay": {},
+              "time_range": { "start": "ISO8601", "end": "ISO8601", "step": "month?" },
+              "levels": ["number?"],
+              "limit_events": "number?",
+              "focus": "string?"
+            }
+          }
+        }
+      },
+      "ok_response": {
+        "summary_template": { "intent": "solar_arc_timeline", "start": "ISO8601", "end": "ISO8601" },
+        "data_template": {
+          "solar_arc_timeline": {
+            "time_range": { "start": "ISO8601", "end": "ISO8601", "step": "string?" },
+            "events": []
+          }
+        }
+      }
+    },
+
+    "rectification": {
+      "group": "TIMELINE",
+      "description": "Birth time rectification by scanning candidate times and matching events.",
+      "request": {
+        "required_paths": [
+          "player.birth.date",
+          "player.birth.place",
+          "request.parameters.time_range.start",
+          "request.parameters.time_range.end",
+          "request.parameters.time_range.step_minutes",
+          "request.parameters.events"
+        ],
+        "optional_paths": [
+          "request.parameters.methods",
+          "request.parameters.orbs",
+          "request.parameters.filters"
+        ],
+        "template": {
+          "request": {
+            "parameters": {
+              "time_range": { "start": "HH:MM", "end": "HH:MM", "step_minutes": 5 },
+              "events": [{ "type": "string", "date": "YYYY-MM-DD", "confidence": "low|medium|high" }],
+              "methods": { "use_major_transits": true, "use_progressions": true, "use_solar_arc": true },
+              "orbs": { "axis_deg": 1.0, "progression_deg": 1.0, "solar_arc_deg": 0.5 },
+              "filters": { "require_axis_activation": true, "min_score_to_keep": 2, "max_candidates": 5 }
+            }
+          }
+        }
+      },
+      "ok_response": {
+        "summary_template": {
+          "intent": "rectification",
+          "candidate_count": 0,
+          "best_candidate_time": "HH:MM?",
+          "best_candidate_score": "number?"
+        },
+        "data_template": {
+          "rectification": {
+            "time_range": { "start": "HH:MM", "end": "HH:MM", "step_minutes": 5 },
+            "events_used": [{ "type": "string", "date": "YYYY-MM-DD", "confidence": "low|medium|high" }],
+            "candidates": [
+              {
+                "time": "HH:MM",
+                "score": "number",
+                "hits": [
+                  {
+                    "event_index": 0,
+                    "method": "major_transits|progressions|solar_arc",
+                    "description": "string?",
+                    "orb_deg": "number?"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+
+    "node_axis_timeline": {
+      "group": "TIMELINE",
+      "description": "Node axis journey timeline using 5 nodal cycles (seasons) and 12 chapters per season based on 30° slices from the natal nodal axis (30..360). Also marks sign changes and slice changes.",
+      "request": {
+        "required_paths": [
+          "player.birth.date",
+          "player.birth.place",
+          "request.parameters.time_range.start",
+          "request.parameters.time_range.end"
+        ],
+        "optional_paths": [
+          "player.birth.time",
+          "player.birth.country_code",
+          "request.parameters.time_range.step",
+          "request.parameters.levels",
+          "request.parameters.limit_events",
+          "request.parameters.focus"
+        ],
+        "template": {
+          "request": {
+            "parameters": {
+              "overlay": {},
+              "time_range": { "start": "ISO8601", "end": "ISO8601", "step": "month?" },
+              "levels": ["number?"],
+              "limit_events": "number?",
+              "focus": "string?"
+            }
+          }
+        }
+      },
+      "ok_response": {
+        "summary_template": { "intent": "node_axis_timeline", "start": "ISO8601", "end": "ISO8601" },
+        "data_template": {
+          "node_axis_timeline": {
+            "time_range": { "start": "ISO8601", "end": "ISO8601", "step": "string?" },
+            "seasons": [
+              {
+                "season_index": "number (1..5)",
+                "season_start": "ISO8601",
+                "season_end": "ISO8601",
+                "chapters": [
+                  {
+                    "chapter_index": "number (1..12)",
+                    "slice_deg": "number (30,60,...,360)",
+                    "chapter_start": "ISO8601",
+                    "chapter_end": "ISO8601",
+                    "node_axis_signs": { "north_node": "string", "south_node": "string" },
+                    "markers": { "slice_changed": "boolean", "sign_changed": "boolean" },
+                    "chapter_theme": "string?",
+                    "events": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
