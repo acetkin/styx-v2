@@ -1,0 +1,50 @@
+{
+  "metadata": {
+    "styx_version": "string",
+    "request_id": "req-1",
+    "timezone": "Europe/Istanbul",
+    "intent": "rectification"
+  },
+  "player": {
+    "identity": {
+      "id": "p1",
+      "name": "Test"
+    },
+    "birth": {
+      "date": "1982-05-08",
+      "time": "06:39",
+      "place": "Karadeniz Eregli",
+      "country_code": "TR"
+    },
+    "facts": {}
+  },
+  "request": {
+    "settings": {
+      "house_system": "placidus",
+      "zodiac": "tropical"
+    },
+    "parameters": {
+      "time_range": {
+        "start": "05:30",
+        "end": "07:30",
+        "step_minutes": 15
+      },
+      "events": [
+        {
+          "type": "career",
+          "date": "2012-06-01",
+          "confidence": "medium"
+        }
+      ],
+      "filters": {
+        "max_candidates": 3
+      }
+    },
+    "output": {
+      "verbosity": "normal",
+      "astrological_objects": [
+        "all"
+      ]
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "styx_version": "string",
+    "request_id": "req-1",
+    "timezone": "Europe/Istanbul",
+    "intent": "solar_arc_chart"
+  },
+  "player": {
+    "identity": {
+      "id": "p1",
+      "name": "Test"
+    },
+    "birth": {
+      "date": "1982-05-08",
+      "time": "06:39",
+      "place": "Karadeniz Eregli",
+      "country_code": "TR"
+    },
+    "facts": {}
+  },
+  "request": {
+    "settings": {
+      "house_system": "placidus",
+      "zodiac": "tropical"
+    },
+    "parameters": {
+      "location": {
+        "lat": 41.2795516,
+        "lon": 31.4229672,
+        "alt_m": 0.0
+      },
+      "at": "2026-02-01T10:00:00Z"
+    },
+    "output": {
+      "verbosity": "normal",
+      "astrological_objects": [
+        "all"
+      ]
+    }
+  }
+}

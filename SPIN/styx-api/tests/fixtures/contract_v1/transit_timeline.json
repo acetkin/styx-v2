@@ -1,0 +1,47 @@
+{
+  "metadata": {
+    "styx_version": "string",
+    "request_id": "req-1",
+    "timezone": "Europe/Istanbul",
+    "intent": "transit_timeline"
+  },
+  "player": {
+    "identity": {
+      "id": "p1",
+      "name": "Test"
+    },
+    "birth": {
+      "date": "1982-05-08",
+      "time": "06:39",
+      "place": "Karadeniz Eregli",
+      "country_code": "TR"
+    },
+    "facts": {}
+  },
+  "request": {
+    "settings": {
+      "house_system": "placidus",
+      "zodiac": "tropical"
+    },
+    "parameters": {
+      "location": {
+        "lat": 41.2795516,
+        "lon": 31.4229672,
+        "alt_m": 0.0
+      },
+      "time_range": {
+        "start": "2026-01-01T00:00:00Z",
+        "end": "2026-02-01T00:00:00Z",
+        "step": "day"
+      },
+      "focus": "jupiter,saturn",
+      "limit_events": 10
+    },
+    "output": {
+      "verbosity": "normal",
+      "astrological_objects": [
+        "all"
+      ]
+    }
+  }
+}
