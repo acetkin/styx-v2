@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from app.contract_v1.contract_store import styx_version
+from app.core.version import STYX_VERSION
 
 
 ERROR_CODES = {
@@ -16,7 +16,7 @@ ERROR_CODES = {
 def _base_response(status: str, summary: dict[str, Any] | None = None, data: dict[str, Any] | None = None) -> dict[str, Any]:
     return {
         "status": status,
-        "metadata": {"styx_version": styx_version()},
+        "metadata": {"styx_version": STYX_VERSION},
         "response": {
             "summary": summary or {},
             "data": data or {},
@@ -62,4 +62,3 @@ def error_response(
         data={"error": payload},
     )
     return body, http_status
-
