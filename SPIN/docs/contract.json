@@ -1,5 +1,5 @@
 {
-  "styx_version": "string",
+  "styx_version": "3.0.0",
   "glossary": {
     "formats": {
       "ISO8601": "RFC3339-compatible timestamp.",

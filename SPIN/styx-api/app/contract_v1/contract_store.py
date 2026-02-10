@@ -5,6 +5,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+from app.core.version import STYX_VERSION
+
 
 def _candidate_contract_paths() -> list[Path]:
     # Primary repo-relative path:
@@ -26,7 +28,4 @@ def load_contract() -> dict[str, Any]:
 
 
 def styx_version() -> str:
-    value = load_contract().get("styx_version")
-    if isinstance(value, str) and value:
-        return value
-    return "unknown"
+    return STYX_VERSION

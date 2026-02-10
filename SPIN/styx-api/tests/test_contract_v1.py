@@ -172,6 +172,22 @@ def test_contract_endpoint_internal_error_returns_envelope(monkeypatch: object) 
     assert payload["response"]["summary"]["message"] == "Unexpected server error. Check server logs."
 
 
+def test_contract_endpoint_styx_version_is_real_for_ok_and_error(monkeypatch: object) -> None:
+    client = _client(monkeypatch)
+
+    ok_resp = client.post("/v1/contract", json=_load_fixture("natal"))
+    assert ok_resp.status_code == 200
+    ok_payload = ok_resp.json()
+    assert ok_payload["metadata"]["styx_version"] == "3.0.0"
+    assert ok_payload["metadata"]["styx_version"] != "string"
+
+    err_resp = client.post("/v1/contract", json={"metadata": {"intent": "natal"}})
+    assert err_resp.status_code == 422
+    err_payload = err_resp.json()
+    assert err_payload["metadata"]["styx_version"] == "3.0.0"
+    assert err_payload["metadata"]["styx_version"] != "string"
+
+
 def test_contract_fixture_smoke_suite(monkeypatch: object) -> None:
     client = _client(monkeypatch)
     paths = sorted(FIXTURE_DIR.glob("*.json"))
