@@ -1,92 +1,87 @@
 # B_Develop
 
 ## OVERVIEW (Living)
-- implementation_strategy: Build FastAPI service with Swiss Ephemeris wrappers, envelope responses, and unified timeline engines under SPIN/styx-api.
-- quality_bar: Deterministic outputs (ordering + rounding); envelope shape stable; timelines scanned adaptively; tests pass; Swagger examples load.
-- packaging_policy: Submission-ready code + data only in SPIN/styx-api; non-submission artifacts in SPIN/_local and SPIN/_logs.
-- test_policy: pytest -q (httpx) plus optional scripts/smoke_run_api.py.
+- implementation_strategy: Maintain a dual-interface runtime:
+  - contract-first API (`POST /v1/contract`) as primary integration surface
+  - envelope endpoints for direct compute and operational diagnostics
+- quality_bar: Deterministic outputs, stable schema names, stable intent names, and explicit version invariants (`3.0.0`).
+- packaging_policy: Deliverable code lives in `SPIN/styx-api`; non-submission artifacts remain in `SPIN/_local` and `SPIN/_logs`.
+- test_policy:
+  - Tier 1 (quick): `pytest -q -k fixture_smoke_suite` plus focused touched-area tests
+  - Tier 2 (PR gate): `pytest -q tests/test_contract_v1.py` and `pytest -q tests/test_smoke.py`
+  - Tier 3 (full): `python -m pytest -q` only for schema/core-risk changes
 
 ## STAGES (Living)
 - current_stage: S3
 - next_stage: NONE
 - active_deliverable: styx-api
 
-### S0 — Setup / Alignment
-- goal: Normalize SEED, create SPEC skeleton, and capture snapshot.
+### S0 - Setup / Alignment
+- goal: Establish deterministic repository skeleton and seed/spec governance.
 - exit_criteria:
-  - SEED/reSpec.md and SEED/STYX.md present
-  - SPEC/A_Design.md, SPEC/B_Develop.md, SPEC/C_Distribute.md created
-  - SEED/snapshot.md created
-  - SPIN workspace created
+  - `SEED/reSpec.md`, `SEED/STYX.md`, `SEED/snapshot.md` exist
+  - `SPEC/A_Design.md`, `SPEC/B_Develop.md`, `SPEC/C_Distribute.md` exist
+  - `SPIN/` workspace created with deliverable structure
 
-### S1 — MVP / First Working Slice
-- goal: Implement /v1/chart (natal/moment) and /v1/config with deterministic outputs; include aspects.
+### S1 - MVP / First Working Slice
+- goal: Build compute endpoints and baseline envelope behavior.
 - exit_criteria:
-  - /v1/chart returns full MVP payload
-  - /v1/config catalogs include defaults
-  - Aspects enabled with explicit orb table
-  - pytest -q passes
+  - `/v1/health`, `/v1/config`, `/v1/chart` implemented
+  - deterministic payload behavior verified
+  - baseline tests green
 
-### S2 — Hardening / Feedback Loop
-- goal: Add solar_arc/secondary_progression charts, /v1/transit (transit only), and /v1/timeline (transit/secondary_progression/solar_arc + lunations/eclipses).
+### S2 - Hardening / Feedback Loop
+- goal: Add universal contract endpoint and complete intent handlers.
 - exit_criteria:
-  - /v1/chart supports natal/moment/solar_arc/secondary_progression
-  - /v1/transit supports transit aspects between frame_a and frame_b
-  - /v1/timeline supports timeline_type transit/secondary_progression/solar_arc with bodies list and lunations/eclipses tokens
-  - Adaptive scan used for timelines; no step params
-  - Envelope responses stable; lunations CSV bundled and referenced
+  - `/v1/contract` operational with implemented intent matrix
+  - contract fixture smoke suite passing
+  - contract errors/validation return stable envelope shape
+  - envelope endpoints still operational
 
-#### S2 Notes — Transit Endpoint
-- transit_type only supports "transit".
-- Requires frame_a and frame_b; computes cross-aspects only.
-- metadata.output does not exist.
-
-#### S2 Notes — Timeline Endpoint
-- metadata.timeline_type: transit | secondary_progression | solar_arc.
-- metadata.bodies required for transit/solar_arc; accepts outer planets + jupiter/saturn + nodes; "nodes" normalized to nn/sn.
-- Lunations/eclipses supported via bodies tokens in transit timeline.
-- Adaptive scan down to minute; no step/step_years parameters.
-
-### S3 — Release / Stable
-- goal: Stabilize API and documentation for public release.
+### S3 - Release / Stable
+- goal: Freeze compatibility semantics for v3.0.0 and keep restart reproducibility high.
 - exit_criteria:
-  - Versioned docs and stable contract
-  - Backward compatibility policy enforced
+  - `metadata.styx_version == "3.0.0"` across contract responses (ok/error/contract)
+  - `meta.api_version == "3.0.0"` for envelope responses
+  - seed/spec are sufficient to rebuild near-current behavior without `SPIN/`
+  - release docs and policy aligned to current runtime
 
 ## TASKS (Living)
 
 ### BACKLOG
 
-#### T-20260201-01 S3 docs + examples
-- intent: Publish stable docs and envelope examples for public release.
+#### T-20260210-01 Restart blueprint hardening
+- intent: Make restart from `SEED/ + SPEC/` reproducibly regenerate near-current API.
 - plan_refs:
-  - SPEC/C_Distribute.md#C3
-  - SPEC/B_Develop.md#STAGES
+  - `SEED/STYX.md#Restart-Reconstruction-Profile`
+  - `SPEC/A_Design.md#A2`
 - implement_path:
-  - SPIN/docs/
-  - SPIN/styx-api/README.md
+  - `SPEC/A_Design.md`
+  - `SPEC/B_Develop.md`
+  - `SEED/STYX.md`
 - acceptance:
-  - Versioned docs and example payloads for each endpoint
-  - Envelope shape documented
+  - restart instructions include endpoint matrix and version invariants
+  - architecture section references contract modules and version source
 - steps:
-  - Create SPIN/docs/ with a versioned overview
-  - Add example requests/responses for each endpoint
+  - keep intent matrix in seed/spec synchronized with contract artifact
+  - ensure test tier policy is documented in develop plan
 - done_check:
   - [ ] implemented
   - [ ] basic test / verification
   - [ ] docs updated (if needed, via DUP)
 
-#### T-20260201-02 Compatibility + deprecation policy
-- intent: Define backward compatibility and deprecation rules for the API.
+#### T-20260210-02 Compatibility policy finalization
+- intent: Finalize contract/envelope backward-compatibility and deprecation workflow.
 - plan_refs:
-  - SPEC/C_Distribute.md#C3
+  - `SPEC/C_Distribute.md#C3`
 - implement_path:
-  - SPIN/docs/compatibility.md
+  - `SPIN/docs/compatibility.md`
 - acceptance:
-  - Compatibility policy documented and referenced in README
+  - documented policy for non-breaking vs breaking changes
+  - explicit deprecation lead time and communication path
 - steps:
-  - Draft policy and deprecation timeline
-  - Review with stakeholders
+  - write policy draft
+  - run stakeholder review
 - done_check:
   - [ ] implemented
   - [ ] basic test / verification
@@ -94,156 +89,22 @@
 
 ### CURRENT
 
-- None (S3 stabilization).
+- T-20260210-01 Restart blueprint hardening.
 
 ### COMPLETED
 
-#### T-20260126-08 Aspects (major set)
-- intent: Add aspects with explicit orb table and meta echoing.
+#### T-20260210-00 Contract version invariant (done)
+- intent: Ensure `metadata.styx_version` returns real `3.0.0` for all contract statuses.
 - plan_refs:
-  - SPEC/A_Design.md#A1
+  - `SPEC/A_Design.md#A3`
+  - `SPEC/C_Distribute.md#C3`
 - implement_path:
-  - SPIN/styx-api
+  - `SPIN/styx-api/app/core/version.py`
+  - `SPIN/styx-api/app/contract_v1/responses.py`
+  - `SPIN/styx-api/tests/test_contract_v1.py`
 - acceptance:
-  - Aspects array present with default major set
-  - Orb table exposed in meta
-- done_check:
-  - [x] implemented
-  - [x] basic test / verification
-  - [x] docs updated (if needed, via DUP)
-
-#### T-20260126-09 Points: Lilith (mean/true toggle)
-- intent: Add points.lilith with settings toggle.
-- plan_refs:
-  - SPEC/A_Design.md#A1
-- implement_path:
-  - SPIN/styx-api
-- acceptance:
-  - Lilith present when enabled
-  - Settings toggle documented
-- done_check:
-  - [x] implemented
-  - [x] basic test / verification
-  - [x] docs updated (if needed, via DUP)
-
-#### T-20260126-10 /v1/transit skeleton
-- intent: Implement /v1/transit relationship modes and base calculated outputs.
-- plan_refs:
-  - SPEC/A_Design.md#A1
-- implement_path:
-  - SPIN/styx-api
-- acceptance:
-  - /v1/transit accepts transit_type and returns aspects per mode
-  - Aspects computed between frames
-- done_check:
-  - [x] implemented
-  - [x] basic test / verification
-  - [x] docs updated (if needed, via DUP)
-
-#### T-20260128-01 Calculated charts: timeline/eclipses/progressions
-- intent: Implement calculated chart outputs for timelines and progressions.
-- plan_refs:
-  - SEED/STYX.md#C-Output-Types-and-Timelines
-- implement_path:
-  - SPIN/styx-api
-- acceptance:
-  - Timeline events use Level 1/2 definitions
-  - Progression timeline returns range-based events
-  - Lunations/eclipses sourced from CSV
-- done_check:
-  - [x] implemented
-  - [x] basic test / verification
-  - [x] docs updated (if needed, via DUP)
-
-#### T-20260126-01 Seed to SPEC scaffold
-- intent: Create SPEC skeleton and snapshot after seed normalization.
-- plan_refs:
-  - SPEC/B_Develop.md#STAGES
-- implement_path:
-  - SPEC/
-  - SEED/snapshot.md
-- acceptance:
-  - SPEC files created from template
-  - Snapshot created and kept short
-- done_check:
-  - [x] implemented
-  - [x] basic test / verification
-  - [x] docs updated (if needed, via DUP)
-
-#### T-20260126-02 Create SPIN workspace
-- intent: Create SPIN folders for deliverable, local, and logs.
-- plan_refs:
-  - SPEC/B_Develop.md#STAGES
-- implement_path:
-  - SPIN/
-- acceptance:
-  - SPIN/styx-api, SPIN/_local, SPIN/_logs exist
-- done_check:
-  - [x] implemented
-  - [x] basic test / verification
-  - [x] docs updated (if needed, via DUP)
-
-#### T-20260126-03 Bootstrap FastAPI app
-- intent: Create base app, config, and routing skeleton in SPIN/styx-api.
-- plan_refs:
-  - SPEC/A_Design.md#A2
-- implement_path:
-  - SPIN/styx-api
-- acceptance:
-  - App starts; /v1/health returns OK
-- done_check:
-  - [x] implemented
-  - [x] basic test / verification
-  - [x] docs updated (if needed, via DUP)
-
-#### T-20260126-04 Implement /v1/config
-- intent: Return catalogs and defaults from seed.
-- plan_refs:
-  - SPEC/A_Design.md#A1
-- implement_path:
-  - SPIN/styx-api
-- acceptance:
-  - /v1/config returns asteroid list and defaults
-- done_check:
-  - [x] implemented
-  - [x] basic test / verification
-  - [x] docs updated (if needed, via DUP)
-
-#### T-20260126-05 Implement /v1/chart core
-- intent: Compute bodies, houses, points, nodes, stars.
-- plan_refs:
-  - SPEC/A_Design.md#A1
-- implement_path:
-  - SPIN/styx-api
-- acceptance:
-  - MVP payload returned with deterministic ordering
-- done_check:
-  - [x] implemented
-  - [x] basic test / verification
-  - [x] docs updated (if needed, via DUP)
-
-#### T-20260126-06 Geocoding adapter + stub
-- intent: Resolve place strings; support STYX_GEOCODE_STUB for tests.
-- plan_refs:
-  - SPEC/A_Design.md#A3
-- implement_path:
-  - SPIN/styx-api
-- acceptance:
-  - Place strings resolve or return 422
-  - Stub works for offline tests
-- done_check:
-  - [x] implemented
-  - [x] basic test / verification
-  - [x] docs updated (if needed, via DUP)
-
-#### T-20260126-07 Tests for MVP endpoints
-- intent: Ensure determinism and schema coverage.
-- plan_refs:
-  - SPEC/B_Develop.md#OVERVIEW
-- implement_path:
-  - SPIN/styx-api
-- acceptance:
-  - pytest -q passes
+  - contract ok/error metadata version equals `3.0.0`
+  - smoke/focused Tier 1 tests pass
 - done_check:
   - [x] implemented
   - [x] basic test / verification
@@ -552,3 +413,46 @@
   - Updated SPEC/A_Design.md and SPEC/B_Develop.md to reflect unified timelines, transit-only, and removed legacy fields.
   - Updated SPEC/C_Distribute.md deliverables to remove progression_timeline and non-transit modes.
   - Refreshed SEED/STYX.md and SEED/snapshot.md to match latest API scope and examples.
+
+### [2026-02-10 05:40] DUP Entry DUP-20260210-01
+- target:
+  - SEED/STYX.md (full refresh)
+  - SEED/snapshot.md (full refresh)
+  - SPEC/A_Design.md (OVERVIEW, A1, A2, A3 full refresh)
+  - SPEC/B_Develop.md (OVERVIEW, STAGES, TASKS living sections refresh)
+  - SPEC/C_Distribute.md (OVERVIEW, C1, C2, C3 full refresh)
+- change_intent:
+  - Align seed/spec with current runtime contract-first scope and version `3.0.0`.
+  - Capture restart objective explicitly: regenerate near-current output from only `SEED/ + SPEC/`.
+  - Encode version invariants for both interfaces:
+    - contract metadata: `metadata.styx_version == "3.0.0"`
+    - envelope metadata: `meta.api_version == "3.0.0"`
+  - Refresh architecture/task/distribution sections around `/v1/contract` and intent matrix.
+- applied_edits:
+  - Rewrote `SEED/STYX.md` to include contract intent matrix, version semantics, and restart reconstruction profile.
+  - Updated `SEED/snapshot.md` with 2026-02-10 state and next actions.
+  - Rewrote `SPEC/A_Design.md` and `SPEC/C_Distribute.md` for v3.0.0 alignment.
+  - Updated `SPEC/B_Develop.md` living sections and added this DUP/session trail.
+
+### [2026-02-10 05:40] Session 15
+- scope_level: SPEC
+- summary: Refreshed SEED/SPEC to match current v3.0.0 behavior and restart-from-seed/spec objective.
+- llm_reasoning_summary: Existing seed/spec reflected older envelope-first scope and lacked contract/version invariants required for reliable restart reconstruction.
+- human_llm_conversation_summary: User asked to align SEED and SPEC with current implementation so future development can start from seed/spec only and reach near-current output.
+- decisions:
+  - Treat `/v1/contract` as primary public surface in planning docs.
+  - Keep envelope endpoints documented as active secondary interface.
+  - Make version invariants explicit and non-negotiable in acceptance/distribution criteria.
+- files_touched:
+  - SEED/STYX.md
+  - SEED/snapshot.md
+  - SPEC/A_Design.md
+  - SPEC/B_Develop.md
+  - SPEC/C_Distribute.md
+- terminal_summary_id: TS-20260210-01
+
+### [2026-02-10 05:40] Terminal Summary TS-20260210-01
+- commands: `rg` scans for version/scope drift; `Get-Content` reviews; `apply_patch` updates for SEED/SPEC files
+- exit_codes: all 0
+- stdout_summary: living docs refreshed to contract-first v3.0.0 state; append-only log entries added.
+- stderr_summary: none

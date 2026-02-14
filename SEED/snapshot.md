@@ -1,27 +1,27 @@
 ReSpec Snapshot
 phase: iteration
 active_deliverable: styx-api
-snapshot_date: 2026-02-02
+snapshot_date: 2026-02-10
 snapshot_author: LLM
 
-status_1p: Design scope aligned to latest API: endpoints /v1/health, /v1/config, /v1/chart, /v1/transit, /v1/timeline; chart types include natal/moment/solar_arc/secondary_progression; timelines unified for transit/secondary_progression/solar_arc with lunations/eclipses tokens.
+status_1p: STYX is stabilized around a contract-first v3.0.0 API. The universal endpoint `/v1/contract` is active with implemented intent handlers, while legacy envelope endpoints remain available for direct compute workflows. Current priority is preserving compatibility and restart reproducibility from `SEED/ + SPEC/`.
 
 key_decisions:
-- Unify timelines under /v1/timeline with adaptive scanning.
-- Restrict /v1/transit to transit-only; remove on_natal/synastry/astrocartography and progression_timeline endpoint.
-- Remove legacy fields (metadata.name, subject, settings.points.lilith, metadata.output/level/body/step_years).
+- Canonical version target is `3.0.0` and must be reflected in contract metadata (`metadata.styx_version`) and envelope API metadata (`meta.api_version`).
+- `/v1/contract` is the primary public integration surface; envelope endpoints are retained.
+- Restart quality is a first-class requirement: docs must be sufficient to rebuild near-current output without `SPIN/`.
 
 recent_findings:
-- Nodes accepted as nn/sn or nodes in timeline bodies.
-- Lunations/eclipses exposed via timeline bodies tokens and CSV data.
+- Contract intent coverage is complete for current matrix, including chart/transit/timeline intents and `contract` status payload.
+- Version source is centralized in code and now resolves to `3.0.0`.
 
 open_questions:
-- Confirm public docs/examples placement for S3 release.
-- Confirm if location should remain object-only or if place strings remain supported.
+- Should envelope endpoint docs be versioned as legacy-compatible or peer-equal with contract endpoint docs?
+- Should next release freeze include strict backward-compatibility tests for all contract fixtures in CI gate?
 
 blockers:
 - None.
 
 next_actions:
-- Update SPIN docs/README examples to match the new API scope.
-- Regenerate samples once public docs are finalized.
+- Keep `SEED/STYX.md` and `SPEC/*` synchronized with runtime behavior after each contract change.
+- Maintain Tiered test reporting in every implementation update.
