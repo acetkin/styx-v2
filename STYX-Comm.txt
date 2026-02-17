@@ -1,5 +1,44 @@
 CODEX:
-Done. Opened the doc-only PR from branch `docs/runbook-local-first`.
+1) git status
+On branch wip/seed-spec-v300-sync-push
+Your branch is up to date with 'origin/wip/seed-spec-v300-sync-push'.
 
-PR link:
-- https://github.com/acetkin/styx/pull/19
+nothing to commit, working tree clean
+
+2) git fetch origin --prune
+
+
+3) git checkout main
+Your branch is behind 'origin/main' by 1 commit, and can be fast-forwarded.
+  (use "git pull" to update your local branch)
+Switched to branch 'main'
+
+4) git reset --hard origin/main
+HEAD is now at a928c4b docs(seed,spec): align with contract-first v3.0.0 restart profile (#24)
+
+5) git clean -fd
+
+
+6) git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   SPEC/B_Develop.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+7) git rev-parse HEAD
+a928c4b73c8fe3389b97a4f88ae8732b0698dd02
+
+8) git rev-parse origin/main
+a928c4b73c8fe3389b97a4f88ae8732b0698dd02
+
+9) git log --oneline --decorate -5
+a928c4b (HEAD -> main, origin/main, origin/HEAD, docs/seed-spec-v300-sync) docs(seed,spec): align with contract-first v3.0.0 restart profile (#24)
+cded312 fix(contract): source metadata.styx_version from project version 3.0.0 (#23)
+d6088b3 docs: add local status entry (#21)
+8e165bc chore: ignore STYX-Comm.txt (#22)
+cdfe162 docs(runbook): add local usage and contract smoke instructions (#20)
