@@ -1,5 +1,23 @@
 CODEX:
-Done. Opened the doc-only PR from branch `docs/runbook-local-first`.
+Goal: push current local changes quickly to GitHub without touching main history.
+Log EVERYTHING to STYX-Comm.txt with headers.
 
-PR link:
-- https://github.com/acetkin/styx/pull/19
+A) Ensure no stale locks
+1) Get-Process git -ErrorAction SilentlyContinue | Format-Table -AutoSize
+2) Stop-Process -Name git -Force -ErrorAction SilentlyContinue
+3) Remove-Item .git\HEAD.lock -Force -ErrorAction SilentlyContinue
+4) Remove-Item .git\packed-refs.lock -Force -ErrorAction SilentlyContinue
+
+B) Create a new remote branch for WIP and push it
+5) git status
+6) git checkout -b wip/seed-spec-v300-sync-push
+7) git add -A
+8) git commit -m "WIP: snapshot local changes (pre-hygiene)" || echo "Nothing to commit"
+9) git push -u origin wip/seed-spec-v300-sync-push
+
+C) Report
+10) git status
+11) git branch -vv
+12) git log --oneline --decorate -5
+
+STOP.
