@@ -2,13 +2,13 @@
   "workflow": "vai",
   "status": "in_progress",
   "active_step": "Run VAi and write raw log",
-  "previous_substep": "error",
-  "previous_substep_at": "2026-04-28T07:50:03Z",
+  "previous_substep": "The current history search suggests the richer model may only survive in older design docs, not active code. I’m pulling those older `SPEC` documents directly from git to confirm …",
+  "previous_substep_at": "2026-04-28T07:50:09Z",
   "latest_substep": "command_execution",
-  "latest_substep_at": "2026-04-28T07:50:06Z",
+  "latest_substep_at": "2026-04-28T07:50:09Z",
   "repo_name": "styx-v2",
   "target_branch": "main",
   "run_id": "25040653643",
   "thread_id": "019dd310-8394-7933-a1e6-bd08e0ccef8c",
-  "updated_at": "2026-04-28T07:50:06Z"
+  "updated_at": "2026-04-28T07:50:09Z"
 }
