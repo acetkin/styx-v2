@@ -1,0 +1,14 @@
+{
+  "workflow": "vai",
+  "status": "starting",
+  "active_step": "Run VAi and write raw log",
+  "previous_substep": null,
+  "previous_substep_at": null,
+  "latest_substep": "VAi process starting",
+  "latest_substep_at": "2026-04-28T07:49:25Z",
+  "repo_name": "styx-v2",
+  "target_branch": "main",
+  "run_id": "25040653643",
+  "thread_id": null,
+  "updated_at": "2026-04-28T07:49:25Z"
+}
