@@ -2,13 +2,13 @@
   "workflow": "vai",
   "status": "in_progress",
   "active_step": "Run VAi and write raw log",
-  "previous_substep": "thread.started",
+  "previous_substep": "turn.started",
   "previous_substep_at": "2026-04-28T07:49:28Z",
-  "latest_substep": "turn.started",
-  "latest_substep_at": "2026-04-28T07:49:28Z",
+  "latest_substep": "I’m inspecting the repository for the older STYX filtering model and will trace it through code, docs, schemas, tests, and route contracts before summarizing the exact layer names…",
+  "latest_substep_at": "2026-04-28T07:49:37Z",
   "repo_name": "styx-v2",
   "target_branch": "main",
   "run_id": "25040653643",
   "thread_id": "019dd310-8394-7933-a1e6-bd08e0ccef8c",
-  "updated_at": "2026-04-28T07:49:28Z"
+  "updated_at": "2026-04-28T07:49:37Z"
 }
