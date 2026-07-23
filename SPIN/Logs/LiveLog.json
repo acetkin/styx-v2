@@ -2,13 +2,13 @@
   "workflow": "vai",
   "status": "in_progress",
   "active_step": "Run VAi and write raw log",
-  "previous_substep": "succeeded in 0ms:",
-  "previous_substep_at": "2026-07-23T14:45:40Z",
-  "latest_substep": "/home/acetkin06/CodeWorks/STYX/SPIN/styx-api/app/services/astro.py:682:def calc_chart(",
-  "latest_substep_at": "2026-07-23T14:45:40Z",
+  "previous_substep": "for a_name, a in targets_a:",
+  "previous_substep_at": "2026-07-23T14:45:47Z",
+  "latest_substep": "for b_name, b in targets_b:",
+  "latest_substep_at": "2026-07-23T14:45:47Z",
   "repo_name": "STYX",
   "target_branch": "main",
   "run_id": "30017236837",
   "thread_id": null,
-  "updated_at": "2026-07-23T14:45:40Z"
+  "updated_at": "2026-07-23T14:45:47Z"
 }
