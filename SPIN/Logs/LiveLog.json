@@ -1,14 +1,14 @@
 {
   "workflow": "vai",
-  "status": "failed",
+  "status": "starting",
   "active_step": "Run VAi and write raw log",
-  "previous_substep": "/bin/bash: line 1: vai: command not found",
-  "previous_substep_at": "2026-07-23T14:29:10Z",
-  "latest_substep": "VAi process failed",
-  "latest_substep_at": "2026-07-23T14:29:10Z",
+  "previous_substep": null,
+  "previous_substep_at": null,
+  "latest_substep": "VAi process starting",
+  "latest_substep_at": "2026-07-23T14:30:26Z",
   "repo_name": "STYX",
   "target_branch": "main",
-  "run_id": "30015993315",
+  "run_id": "30016112204",
   "thread_id": null,
-  "updated_at": "2026-07-23T14:29:10Z"
+  "updated_at": "2026-07-23T14:30:26Z"
 }
