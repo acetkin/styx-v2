@@ -1,14 +1,14 @@
 {
   "workflow": "vai",
-  "status": "in_progress",
+  "status": "completed",
   "active_step": "Run VAi and write raw log",
-  "previous_substep": "+ print(path)",
-  "previous_substep_at": "2026-07-23T14:51:54Z",
-  "latest_substep": "+ print(meta)",
-  "latest_substep_at": "2026-07-23T14:51:54Z",
+  "previous_substep": "Kanonik repo verisiyle 13 faz olayı üretildi; önceki progressed New Moon `1997-05-23T10:51:31.193435Z`, sonraki progressed New Moon ise `2026-09-10T03:19:14.623301Z` olarak hesapl…",
+  "previous_substep_at": "2026-07-23T14:52:03Z",
+  "latest_substep": "Rapor içinde her faz için `Progressed->Natal` ve aynı exact anda `Transit->Natal` analizleri, active pattern graph, pattern nodes, shared nodes, clusters, bridge/router nodes, ava…",
+  "latest_substep_at": "2026-07-23T14:52:03Z",
   "repo_name": "STYX",
   "target_branch": "main",
   "run_id": "30017236837",
   "thread_id": null,
-  "updated_at": "2026-07-23T14:51:54Z"
+  "updated_at": "2026-07-23T14:52:04Z"
 }
