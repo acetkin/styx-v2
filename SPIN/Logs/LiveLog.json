@@ -2,13 +2,13 @@
   "workflow": "vai",
   "status": "in_progress",
   "active_step": "Run VAi and write raw log",
-  "previous_substep": "/home/acetkin06/CodeWorks/STYX/SPIN/styx-api/app/core/errors.py:65:async def validation_exception_handler(request: Request, exc: RequestValidationError):",
-  "previous_substep_at": "2026-07-23T14:45:47Z",
-  "latest_substep": "/home/acetkin06/CodeWorks/STYX/SPIN/styx-api/app/core/errors.py:93: errors=_error_items_from_validation_error(exc),",
-  "latest_substep_at": "2026-07-23T14:45:47Z",
+  "previous_substep": "drwxr-xr-x 2 acetkin06 acetkin06 4096 Jul 23 14:44 docs",
+  "previous_substep_at": "2026-07-23T14:45:59Z",
+  "latest_substep": "drwxr-xr-x 7 acetkin06 acetkin06 4096 Jul 23 14:44 styx-api",
+  "latest_substep_at": "2026-07-23T14:45:59Z",
   "repo_name": "STYX",
   "target_branch": "main",
   "run_id": "30017236837",
   "thread_id": null,
-  "updated_at": "2026-07-23T14:45:47Z"
+  "updated_at": "2026-07-23T14:45:59Z"
 }
