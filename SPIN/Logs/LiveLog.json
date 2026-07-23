@@ -1,6 +1,6 @@
 {
   "workflow": "vai",
-  "status": "starting",
+  "status": "in_progress",
   "active_step": "Run VAi and write raw log",
   "previous_substep": null,
   "previous_substep_at": null,
