@@ -2,13 +2,13 @@
   "workflow": "vai",
   "status": "in_progress",
   "active_step": "Run VAi and write raw log",
-  "previous_substep": "from app.config import ASPECT_ANGLES, ASPECT_CLASSES, ASPECT_ORBS, ASTEROID_ORDER, PLANET_ORDER",
-  "previous_substep_at": "2026-07-23T14:49:50Z",
-  "latest_substep": "ModuleNotFoundError: No module named 'app'",
-  "latest_substep_at": "2026-07-23T14:49:50Z",
+  "previous_substep": "exec",
+  "previous_substep_at": "2026-07-23T14:49:57Z",
+  "latest_substep": "/bin/bash -lc 'PYTHONPATH=/home/acetkin06/CodeWorks/STYX/SPIN/styx-api python3 /home/acetkin06/CodeWorks/STYX/SPIN/styx-api/scripts/generate_progressed_lunar_phase_report.py' in /…",
+  "latest_substep_at": "2026-07-23T14:49:57Z",
   "repo_name": "STYX",
   "target_branch": "main",
   "run_id": "30017236837",
   "thread_id": null,
-  "updated_at": "2026-07-23T14:49:50Z"
+  "updated_at": "2026-07-23T14:49:57Z"
 }
