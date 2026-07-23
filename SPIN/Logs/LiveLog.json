@@ -2,13 +2,13 @@
   "workflow": "vai",
   "status": "in_progress",
   "active_step": "Run VAi and write raw log",
-  "previous_substep": "exited 127 in 297ms:",
-  "previous_substep_at": "2026-07-23T14:45:09Z",
-  "latest_substep": "/bin/bash: line 1: rg: command not found",
-  "latest_substep_at": "2026-07-23T14:45:09Z",
+  "previous_substep": "/home/acetkin06/CodeWorks/STYX/SPIN/styx-api/data/lunations_100y.csv:2495:2111-02-08T12:06:39.351646Z,new_moon,",
+  "previous_substep_at": "2026-07-23T14:45:17Z",
+  "latest_substep": "/home/acetkin06/CodeWorks/STYX/SPIN/styx-api/data/lunations_100y.csv:2572:2113-10-09T20:06:39.512029Z,new_moon,",
+  "latest_substep_at": "2026-07-23T14:45:17Z",
   "repo_name": "STYX",
   "target_branch": "main",
   "run_id": "30017236837",
   "thread_id": null,
-  "updated_at": "2026-07-23T14:45:09Z"
+  "updated_at": "2026-07-23T14:45:17Z"
 }
