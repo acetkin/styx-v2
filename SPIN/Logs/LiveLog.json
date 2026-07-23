@@ -2,13 +2,13 @@
   "workflow": "vai",
   "status": "in_progress",
   "active_step": "Run VAi and write raw log",
-  "previous_substep": "raise RuntimeError(f\"expected_single_root angle={angle} roots={len(roots)}\")",
-  "previous_substep_at": "2026-07-23T14:50:06Z",
-  "latest_substep": "RuntimeError: expected_single_root angle=180.0 roots=0",
-  "latest_substep_at": "2026-07-23T14:50:06Z",
+  "previous_substep": "2024 327.855",
+  "previous_substep_at": "2026-07-23T14:50:30Z",
+  "latest_substep": "2026 356.055",
+  "latest_substep_at": "2026-07-23T14:50:30Z",
   "repo_name": "STYX",
   "target_branch": "main",
   "run_id": "30017236837",
   "thread_id": null,
-  "updated_at": "2026-07-23T14:50:06Z"
+  "updated_at": "2026-07-23T14:50:30Z"
 }
