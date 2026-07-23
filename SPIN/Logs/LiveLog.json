@@ -2,13 +2,13 @@
   "workflow": "vai",
   "status": "in_progress",
   "active_step": "Run VAi and write raw log",
-  "previous_substep": "/home/acetkin06/CodeWorks/STYX/SPIN/styx-api/tests/test_api.py:306: for transit_type in (\"transit\", \"secondary_progression\"):",
-  "previous_substep_at": "2026-07-23T14:45:33Z",
-  "latest_substep": "/home/acetkin06/CodeWorks/STYX/SPIN/styx-api/tests/test_api.py:486: \"timeline_type\": \"secondary_progression\",",
-  "latest_substep_at": "2026-07-23T14:45:33Z",
+  "previous_substep": "succeeded in 0ms:",
+  "previous_substep_at": "2026-07-23T14:45:40Z",
+  "latest_substep": "/home/acetkin06/CodeWorks/STYX/SPIN/styx-api/app/services/astro.py:682:def calc_chart(",
+  "latest_substep_at": "2026-07-23T14:45:40Z",
   "repo_name": "STYX",
   "target_branch": "main",
   "run_id": "30017236837",
   "thread_id": null,
-  "updated_at": "2026-07-23T14:45:33Z"
+  "updated_at": "2026-07-23T14:45:40Z"
 }
