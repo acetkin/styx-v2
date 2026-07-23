@@ -138,71 +138,11 @@ Old request examples from historical model:
 ```
 
 Meaning:
-- Mode layer: `secondary_progression`
-- Output-shape layer: `chart`
 
-Old timeline example:
-
-```json
-{
-  "metadata": {
-    "start_utc": "2026-01-01T00:00:00Z",
-    "end_utc": "2031-01-01T00:00:00Z",
-    "level": "level1"
-  },
-  "natal": { "...": "natal payload" }
-}
-```
-
-Old narrowed timeline example:
-
-```json
-{
-  "metadata": {
-    "start_utc": "2026-01-01T00:00:00Z",
-    "end_utc": "2026-12-31T23:59:59Z",
-    "level": "eclipses"
-  },
-  "natal": { "...": "natal payload" }
-}
-```
-
-Current contract example:
-
-```json
-{
-  "metadata": { "intent": "natal", "styx_version": "3.0.0", "request_id": "x" },
-  "player": { "birth": { "date": "1982-05-08", "place": "Karadeniz Eregli" } },
-  "request": {
-    "settings": { "house_system": "placidus", "zodiac": "tropical" },
-    "parameters": {},
-    "output": { "verbosity": "normal", "astrological_objects": ["natal"] }
-  }
-}
-```
-
-Meaning:
-- The old 3-part selector has been reduced to output verbosity plus object allowlist, with some per-intent parameter filters such as `focus`, `limit_events`, and rectification `filters`.
-
-**5. Recommendation for new Aion/STYX design**
-Keep the old idea, but formalize it cleanly:
-
-1. Use an explicit 3-layer structure in the new contract:
-   - `mode`: which engine/result family
-   - `scope`: which objects/events/bodies/time slices
-   - `shape`: which sections/fields/detail depth to return
-
-2. Replace scattered legacy selectors with one normalized filter block, for example:
-   - `request.filters.mode`
-   - `request.filters.scope`
-   - `request.filters.shape`
-
-3. Preserve the useful old semantics:
-   - old `transit_type` maps to `mode`
-   - old `level/body` maps to `scope`
-   - old `output` plus current `verbosity/astrological_objects` maps to `shape`
-
-4. Avoid reintroducing ambiguous aliases like `level1/level2/level3` unless they are documented presets. Prefer explicit names such as:
-   - `scope.timeline_preset = outer_major | saturn_jupiter | lunations`
-
-5. If Aion/STYX needs long-term stability, document these three layers in the public contract directly. In this repo, the older model was real, but mostly implicit and split across docs, routes, and tests.
+## ENTRY 2
+- Project Name: STYX
+- DateTime: 2026-07-23T14:29:13Z
+- LLM: VAi-Vai
+- Session ID: UNKNOWN_SESSION
+- Instruction: Bir önceki Progressed New Moon ile 2026-09-09 Progressed New Moon arasındaki tüm progressed lunar phase cycle'ı çıkar. Progressed Moon'un Progressed Sun'a göre yaptığı 0°,30°,60°,90°,120°,150°,180°,210°,240°,270°,300°,330°,360° exact anlarını hesapla (iki New Moon dahil toplam 13 olay). Her olay için Progressed→Natal ve aynı exact anda Transit→Natal STYX analizlerini üret. Pattern graph, contact graph, natal overlay house, centrality, router, cluster, validation ve teknik özetleri dahil et. Sonunda 29 yıllık döngünün teknik sentezini hazırla. Rapor daha sonra biyografik doğrulama yapılabilecek ayrıntıda olsun; her fazın baskın yaşam temalarını teknik verilerden türet, deterministik yaşam hikayesi yazma.
+- Response: (No structured response captured from lastRun-vai.jsonl)
