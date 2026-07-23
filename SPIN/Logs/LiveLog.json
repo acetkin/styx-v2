@@ -2,13 +2,13 @@
   "workflow": "vai",
   "status": "in_progress",
   "active_step": "Run VAi and write raw log",
-  "previous_substep": "2024 327.855",
-  "previous_substep_at": "2026-07-23T14:50:30Z",
-  "latest_substep": "2026 356.055",
-  "latest_substep_at": "2026-07-23T14:50:30Z",
+  "previous_substep": "codex",
+  "previous_substep_at": "2026-07-23T14:50:48Z",
+  "latest_substep": "Sorunun kaynağı net: `0°` için kullanılan signed fark, `180°` çevresinde yalancı kök üretiyor. Kök bulmayı ikiye ayırıyorum: yeniaylar için lokal minimum + dar bisection, ara fazl…",
+  "latest_substep_at": "2026-07-23T14:50:48Z",
   "repo_name": "STYX",
   "target_branch": "main",
   "run_id": "30017236837",
   "thread_id": null,
-  "updated_at": "2026-07-23T14:50:30Z"
+  "updated_at": "2026-07-23T14:50:48Z"
 }
