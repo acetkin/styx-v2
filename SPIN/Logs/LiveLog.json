@@ -2,13 +2,13 @@
   "workflow": "vai",
   "status": "in_progress",
   "active_step": "Run VAi and write raw log",
-  "previous_substep": "drwxr-xr-x 2 acetkin06 acetkin06 4096 Jul 23 14:44 docs",
-  "previous_substep_at": "2026-07-23T14:45:59Z",
-  "latest_substep": "drwxr-xr-x 7 acetkin06 acetkin06 4096 Jul 23 14:44 styx-api",
-  "latest_substep_at": "2026-07-23T14:45:59Z",
+  "previous_substep": "swisseph ok",
+  "previous_substep_at": "2026-07-23T14:46:10Z",
+  "latest_substep": "zoneinfo ok",
+  "latest_substep_at": "2026-07-23T14:46:10Z",
   "repo_name": "STYX",
   "target_branch": "main",
   "run_id": "30017236837",
   "thread_id": null,
-  "updated_at": "2026-07-23T14:45:59Z"
+  "updated_at": "2026-07-23T14:46:10Z"
 }
