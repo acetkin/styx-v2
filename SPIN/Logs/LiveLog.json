@@ -1,14 +1,14 @@
 {
   "workflow": "vai",
-  "status": "completed",
+  "status": "starting",
   "active_step": "Run VAi and write raw log",
-  "previous_substep": "**1. Summary** The old STYX filtering system does appear in repo history, but not as a single explicit class named “three-layer filter.” What I found is a historical three-part re…",
-  "previous_substep_at": "2026-04-28T07:51:39Z",
-  "latest_substep": "turn.completed",
-  "latest_substep_at": "2026-04-28T07:51:40Z",
-  "repo_name": "styx-v2",
+  "previous_substep": null,
+  "previous_substep_at": null,
+  "latest_substep": "VAi process starting",
+  "latest_substep_at": "2026-07-23T14:29:10Z",
+  "repo_name": "STYX",
   "target_branch": "main",
-  "run_id": "25040653643",
-  "thread_id": "019dd310-8394-7933-a1e6-bd08e0ccef8c",
-  "updated_at": "2026-04-28T07:51:40Z"
+  "run_id": "30015993315",
+  "thread_id": null,
+  "updated_at": "2026-07-23T14:29:10Z"
 }
